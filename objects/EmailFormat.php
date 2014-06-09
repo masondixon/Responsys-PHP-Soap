@@ -1,0 +1,8 @@
+<?php
+
+class EmailFormat
+{
+	CONST HTML_FORMAT = "HTML";
+	CONST NO_FORMAT   = "NO_FORMAT";
+	CONST TEXT_FORMAT = "TEXT";
+}
