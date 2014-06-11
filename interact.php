@@ -117,13 +117,9 @@ class interact
 	}
 	
 	
-	private function print_xml( $instance )
-	{
-		echo "***************** " .
-			 "*     DEBUG     * " .
-			 "*****************\n";
-		
-		if( $instance->debug == true )
+	private function print_xml()
+	{	
+		if( $this->debug == true )
 		{
 			echo " ************************* \n";
 			echo "REQUEST HEADERS: \n";
@@ -154,31 +150,29 @@ class interact
 	 */
 	public function execute( $instance )
 	{
+		$result = null;
+		
 		try
 		{
-			$result = null;
-
 			$result =  self::$soapClient->{ get_class( $instance ) }( $instance->params );
-			
-			$this->print_xml( $instance );
-			
-			return $result;
-			
+			$this->print_xml();
 		}
-		catch( SoapFault $soap_fault )
+		catch( SoapFault $fault )
 		{
-			echo " ***** Soap Fault ***** \n";
-			var_dump( $soap_fault );
-			
-			$this->print_xml( $instance );
+			echo " *** SOAPFAULT *** \n";
+			$this->print_xml();
+		
 		}
 		catch( Exception $exception )
 		{
-			echo " ***** Exception ***** \n";
-			var_dump( $exception );
-			
-			$this->print_xml( $instance );
+			echo " *** EXCEPTION *** \n";
+			echo $exception->getMessage();
 		}
+			
+		if( $this->debug == true )
+			print_r( $result );
+		
+		return $result;
 	}
 	
 	/**
@@ -230,7 +224,11 @@ class interact
 				else
 				{	
 					echo "Logged in -> session_id : " . $this->sessionId . "\n";
+					self::$isLoggedIn = true;
 					$result = true;
+					
+					if( $this->debug == true )
+						$this->print_xml();
 				}
 			}
 		}
@@ -239,7 +237,6 @@ class interact
 	}
 	
 	/**
-	 * @return boolean
 	 * Wrapper for logout
 	 * There is a max concurrent session allowance which if exceeded, will lock out the api user
 	 * Its IMPORTANT to logout in other words
@@ -248,14 +245,20 @@ class interact
 	{
 		$result = false;
 	
-		$loggedOut = self::$soapClient->logout();
-	
-		if( $loggedOut->result == 1 )
+		if( self::$isLoggedIn )
 		{
-			self::$isLoggedIn = false;
-			self::$soapClient = null;
-			echo "Logged Out \n";
-			$result = true;
+			$loggedOut = self::$soapClient->logout();
+		
+			if( $this->debug == true )
+				$this->print_xml();
+			
+			if( $loggedOut->result == 1 )
+			{
+				self::$isLoggedIn = false;
+				self::$soapClient = null;
+				echo "Logged Out from sessionId : " . $this->sessionId . "\n";
+				$result = true;
+			}
 		}
 	
 		return $result;

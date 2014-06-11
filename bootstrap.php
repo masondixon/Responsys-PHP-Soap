@@ -21,7 +21,7 @@ set_include_path( $base_include_path . "/includes" . PATH_SEPARATOR . $base_incl
 
 echo " *** INCLUDING REQUIRED FILES/CLASSES *** \n";
 
-echo " New include path : " . get_include_path() . "\n";
+//echo " New include path : " . get_include_path() . "\n";
 
 //include base
 echo " Including interact base class interact.php \n";
