@@ -1,7 +1,5 @@
 <?php
 
-include '../../objects/MatchColumn.php';
-
 class MatchColumnTest extends PHPUnit_Framework_TestCase
 {
 	public $column;

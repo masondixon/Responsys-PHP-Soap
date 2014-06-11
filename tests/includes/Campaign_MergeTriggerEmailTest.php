@@ -1,7 +1,5 @@
 <?php
 
-include "../../bootstrap.php";
-
 class Campaign_MergeTriggerEmailTest extends PHPUnit_Framework_TestCase
 {
 	public $trigger;

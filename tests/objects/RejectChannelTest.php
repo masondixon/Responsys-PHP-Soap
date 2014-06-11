@@ -1,7 +1,5 @@
 <?php
 
-include '../../objects/RejectChannel.php';
-
 class RejectChannelTest extends PHPUnit_Framework_TestCase
 {
 	public $channel;

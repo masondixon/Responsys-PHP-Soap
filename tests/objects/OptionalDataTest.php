@@ -1,7 +1,5 @@
 <?php
 
-include '../../objects/OptionalData.php';
-
 class OptionalDataTest extends PHPUnit_Framework_TestCase
 {
 	public $opt_data;

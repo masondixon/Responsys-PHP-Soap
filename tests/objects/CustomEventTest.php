@@ -1,8 +1,5 @@
 <?php
 
-include '../../objects/CustomEvent.php';
-include '../../objects/RecipientData.php';
-
 class CustomEventTest extends PHPUnit_Framework_TestCase
 {
 	public $event;

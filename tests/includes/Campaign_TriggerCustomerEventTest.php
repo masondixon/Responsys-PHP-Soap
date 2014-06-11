@@ -1,7 +1,5 @@
 <?php
 
-include "../../bootstrap.php";
-
 class Campaign_TriggerCustomEventTest extends PHPUnit_Framework_TestCase
 {
 	public $event;

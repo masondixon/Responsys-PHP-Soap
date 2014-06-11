@@ -1,7 +1,5 @@
 <?php
 
-include '../../objects/MatchOperator.php';
-
 class MatchOperatorTest extends PHPUnit_Framework_TestCase
 {
 	public $operator;

@@ -1,7 +1,5 @@
 <?php
 
-include '../../objects/DefaultPermissionStatus.php';
-
 class DefaultPermissionStatusTest extends PHPUnit_Framework_TestCase
 {
 	public $status;

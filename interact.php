@@ -265,7 +265,8 @@ class interact
 	public function getSoapFunctions()
 	{
 		$functions = self::$soapClient->__getFunctions();
-		print_r( $functions );
+		
+		return $functions;
 	}
 	
 	

@@ -1,10 +1,5 @@
 <?php
 
-include '../../objects/Recipient.php';
-include '../../objects/InteractObject.php';
-include '../../objects/OptionalData.php';
-include '../../objects/EmailFormat.php';
-
 class RecipientTest extends PHPUnit_Framework_TestCase
 {
 	public $recipient;

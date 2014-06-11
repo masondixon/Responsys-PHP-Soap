@@ -1,7 +1,5 @@
 <?php
 
-include '../../objects/RecipientIdentifier.php';
-
 class RecipientIdentifierTest extends PHPUnit_Framework_TestCase
 {
 	public $recipientIdentifier;

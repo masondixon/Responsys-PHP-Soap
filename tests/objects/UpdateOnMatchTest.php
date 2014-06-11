@@ -1,7 +1,5 @@
 <?php
 
-include '../../objects/UpdateOnMatch.php';
-
 class UpdateOnMatchTest extends PHPUnit_Framework_TestCase
 {
 	public $update;

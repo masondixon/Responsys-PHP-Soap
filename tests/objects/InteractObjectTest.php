@@ -1,7 +1,5 @@
 <?php
 
-include '../../objects/InteractObject.php';
-
 class InteractObjectTest extends PHPUnit_Framework_TestCase
 {
 	public $int_obj;

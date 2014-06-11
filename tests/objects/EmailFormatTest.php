@@ -1,7 +1,5 @@
 <?php
 
-include '../../objects/EmailFormat.php';
-
 class EmailFormatTest extends PHPUnit_Framework_TestCase
 {
 	public $format;

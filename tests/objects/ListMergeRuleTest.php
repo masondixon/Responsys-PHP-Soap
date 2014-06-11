@@ -1,13 +1,5 @@
 <?php
 
-$object_includes = glob('../../objects/*.php');
-
-foreach( $object_includes as $include )
-{
-	include $include;
-}
-
-
 class ListMergeRuleTest extends PHPUnit_Framework_TestCase
 {
 	public $list_merge_rule;
