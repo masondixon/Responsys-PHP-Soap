@@ -8,12 +8,12 @@ class Recipient
 			$customerId,
 			$emailAddress,
 			$mobileNumber,
-			$optionalData,
 			$emailFormat;
 	
-	public function setListName( interactObject $int_obj )
+	public function setListName( $folder, $list )
 	{
-		$this->listName = $int_obj;
+		$this->listName->folderName = $folder;
+		$this->listName->objectName = $list;
 	}
 	
 	public function setRecipientId( $id )
@@ -34,11 +34,6 @@ class Recipient
 	public function setMobileNumber( $number )
 	{
 		$this->mobileNumber = $number;
-	}
-	
-	public function setOptionalData( array $data )
-	{
-		$this->optionalData = $data;
 	}
 	
 	public function setEmailFormat( $format )

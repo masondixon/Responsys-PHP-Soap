@@ -103,44 +103,52 @@ class scheduleCampaignLaunch extends interact
 class triggerCustomEvent extends interact
 {	
 	
-	public $params = array( 'customEvent' => null, 'recipientData' => null );
+	public $params = array( 'customEvent' => null, 'recipientData' =>  null );
 	
 	public function setCustomEventParam( CustomEvent $event )
 	{
 		$this->params[ 'customEvent'] = $event;
 	}
 	
-	public function setRecipientDataParam( InteractObject $listName, RecipientIdentifier $recipientIdentifier, array $recipient_ids, array $transientData  )
+	public function setRecipientDataParam( $recipient_folder, $recipient_list, RecipientIdentifier $recipientIdentifier, array $recipient_ids, array $transientData  )
 	{
 		$recipientDataArray = array();
 		$optionalDataArray  = array();
 		
 		$recipientCount = count( $recipient_ids );
-		$recipient_obj  = new RecipientIdentifier();
 		
 		for( $cnt = 0; $cnt < $recipientCount; $cnt++ )
 		{
 			$optionalDataArray = null;
-			$recipient = new recipient();
-			$recipient->setListName( $listName );
-				
+			$recipient = null;
+			
+			$recipient = new Recipient();
+			$recipient->setListName( $recipient_folder, $recipient_list );
+			
 			$recipient->setEmailFormat( EmailFormat::NO_FORMAT );
 			$recipient->{ "set". $recipientIdentifier->getValue() }( $recipient_ids[ $cnt ] );
-				
+			
 			// Build optionalData array
-			foreach( $transientData[ 0 ] as $name => $value )
+			foreach( $transientData as $key => $array )
 			{
-				$optionalData = new optionalData();
-				$optionalData->setName($name);
-				$optionalData->setValue($value);
-				$optionalDataArray[] = $optionalData;
+				foreach ( $array as $name => $value )
+				{
+					$optionalData = null;
+					$optionalData = new optionalData();
+					$optionalData->setName($name);
+					$optionalData->setValue($value);
+					$optionalDataArray[] = $optionalData;
+				}
 			}
 			
-			$recipient->setOptionalData( $optionalDataArray );
-			$recipientDataArray[] = $recipient;
+			$recipientDataObj = new RecipientData();
+			$recipientDataObj->setRecipient( $recipient );
+			$recipientDataObj->setOptionalData( $optionalDataArray );
+			
+			$this->params['recipientData'][] = $recipientDataObj;
 		}
-		
-		$this->params['recipientData'] = $recipientDataArray;
+			
+			print_r( $this->params );
 	}
 	 
 }

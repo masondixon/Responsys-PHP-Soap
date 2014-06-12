@@ -2,11 +2,17 @@
 
 class RecipientData
 {
-	public $recipientData;
+	public $recipient,
+		   $optionalData;
 	
-	public function setRecipientData( $data )
+	public function setRecipient( Recipient $recipient )
 	{
-		$this->recipientData = $data;
+		$this->recipient = $recipient;
+	}
+	
+	public function setOptionalData( array $optional_data_array )
+	{
+		$this->optionalData = $optional_data_array;
 	}
 	
 }

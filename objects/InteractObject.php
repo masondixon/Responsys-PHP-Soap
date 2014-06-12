@@ -2,6 +2,9 @@
 
 class InteractObject
 {
+	public $folderName,
+		   $objectName;
+			
 	public function setFolderName( $name )
 	{
 		$this->folderName = $name;
@@ -10,11 +13,6 @@ class InteractObject
 	public function setObjectName( $name )
 	{
 		$this->objectName = $name;
-	}
-	
-	public function setListName( InteractObject $int_obj )
-	{
-		$this->listName = $int_obj;
 	}
 	
 }
