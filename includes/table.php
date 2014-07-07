@@ -237,14 +237,14 @@ class retrieveTableRecords extends interact
 	
 class retrieveProfileExtensionRecords extends interact
 {
-	public $params = array( 'listExtension' => null,
+	public $params = array( 'profileExtension' => null,
 							'queryColumn'   => null,
 							'fieldList'     => null,
 							'idsToRetreive' => null );
 	
 	public function setListExtensionParam( InteractObject $int_obj )
 	{
-		$this->params['listExtension'] = $int_obj;
+		$this->params['profileExtension'] = $int_obj;
 	}
 	
 	public function setFieldListParam( array $fields )

@@ -56,7 +56,7 @@ class ListMergeRule
 	
 	public  function setDefaultPermissionStatus( DefaultPermissionStatus $status )
 	{
-		$this->defaultPermissionStatus = $status->defaultPermissionStatus;
+		$this->defaultPermissionStatus = null;//$status->defaultPermissionStatus;
 	}
 	
 	public function setMatchColumn1( MatchColumn $match_column )

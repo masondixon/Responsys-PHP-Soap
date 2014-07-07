@@ -14,7 +14,7 @@ try
 
 	$instance->intitializeSoapClient( $config_file['location']['wsdl'],
 		                              $config_file['location']['endpoint']  );
-
+	
 	if ( $instance->login( $config_file['auth_regular']['login'], $config_file['auth_regular']['pass'] ) )
 	{
 
@@ -54,12 +54,16 @@ try
 
 		$merge_obj->setMergeRuleParam( $rule );
 
-		$fieldNames = array( "EMAIL_ADDRESS_", "CITY_" );
+		$fieldNames = array( "EMAIL_ADDRESS_", "EMAIL_PERMISSION_STATUS_", "CITY_" );
 
 		$record_1 = new Record();
-		$record_1->setFieldValues( array( "mdixon@responsys.com", "martinez") );
+		$record_1->setFieldValues( array( "mdixon+4@gmail.com", "I", "optin city") );
+		
+		$record_2 = new Record();
+		$record_2->setFieldValues( array( "mdixon+5@gmail.com", "O", "optout city") );
 
 		$records[] = $record_1;
+		$records[] = $record_2;
 
 		$merge_obj->setRecordDataParam( $fieldNames, $records );
 		$merge_result_ids = $instance->execute( $merge_obj );
@@ -67,6 +71,7 @@ try
 		// Now we make a secondary merge call to opt out the newly inserted record....
 		// for brevity i will reuse some of the variables above
 		
+		/*
 		$fieldNames2 = array( "EMAIL_ADDRESS_", "EMAIL_PERMISSION_STATUS_", "CITY_" );
 
 		$record_2 = new Record();
@@ -75,16 +80,17 @@ try
 		
 		$merge_obj->setRecordDataParam( $fieldNames2, $records2 );
 		$merge_result_ids_2 = $instance->execute( $merge_obj );
-		
+		*/
 		// Now lets use retrieveListMembers to confirm that the change took place
+		// The email permission status should be "O" which is optout
 		$retrieve_obj = new retrieveListMembers();
-		$retrieve_obj->setFieldListParam( $fieldNames2 );
-		$retrieve_obj->setIdsToRetrieve( array( "mdixon@responsys.com" ) ); // shortcut for mdixon@resp
+		$retrieve_obj->setFieldListParam( $fieldNames );
+		$retrieve_obj->setIdsToRetrieve( array( "mdixon+4@gmail.com", "mdixon+5@gmail.com" ) ); 
 		$retrieve_obj->setListParam( $interact_object );
 		$retrieve_obj->setQueryColumn( "EMAIL_ADDRESS" );
 		
 		$retrieve_results = $instance->execute( $retrieve_obj );
-
+		
 		$instance->logout();
 
 	}

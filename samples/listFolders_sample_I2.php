@@ -9,10 +9,10 @@ try
 	
 	$instance->debug == true;
 	
-	$instance->intitializeSoapClient( $config_file['location']['wsdl'], 
-									  $config_file['location']['endpoint']  );
+	$instance->intitializeSoapClient( 'https://ws2.responsys.net/webservices/wsdl/ResponsysWS_Level1.wsdl', 
+									  'https://ws2.responsys.net/webservices/services/ResponsysWSService' );
 	
-	if ( $instance->login( $config_file['auth_regular']['login'], $config_file['auth_regular']['pass'] ) )
+	if ( $instance->login( 'masonTest', 'XixXcbF30j' ) )
 	{
 		
 		$listFolders_object = new listFolders();
