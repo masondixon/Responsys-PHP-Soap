@@ -9,7 +9,7 @@ class RecordData
 	
 	public function setFieldNames( array $fields )
 	{
-		$this->fields = $fields;
+		$this->fieldNames = $fields;
 	}
 	
 }

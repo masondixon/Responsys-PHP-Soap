@@ -42,15 +42,14 @@ class createTableWithPK extends interact
 
 	public function setFieldsParam( array $fields_details )
 	{
-		foreach( $field_details as $field_ )
-		{
-
+		foreach( $fields_details as $field_ )
+		{	 
 			$field = new Field();
-			$field->fieldName = $field_['column_name'];
+			$field->fieldName = $field_['fieldName'];
 			$fieldType        = new FieldType();
-			$field->fieldType = constant( get_class( $fieldType ) . "::" . $field_['column_type'] );
-			$field->Custom    = $field_['is_custom'];
-			$field->dataExtractionKey = $field_['is_extraction'];
+			$field->fieldType = constant( get_class( $fieldType ) . "::" . $field_['fieldType'] );
+			$field->custom    = $field_['custom'];
+			$field->dataExtractionKey = $field_['dataExtractionKey'];
 
 			$fields_array[] = $field;
 
@@ -167,9 +166,9 @@ class mergeTableRecordsWithPK extends interact
 		$this->params['table'] = $interact_obj;
 	}
 
-	public function setRecordDataParam( array $records )
+	public function setRecordDataParam( $records )
 	{
-		$this->param['recordData'] = $records;
+		$this->params['recordData'] = $records;
 	}
 	
 	public function setInsertOnNoMatchParam( $insertOnNoMatch )
@@ -177,9 +176,9 @@ class mergeTableRecordsWithPK extends interact
 		$this->params['insertOnNoMatch'] = $insertOnNoMatch;
 	}
 	
-	public function setUpdateOnMatch( $updateOnNoMatch )
+	public function setUpdateOnMatch( $updateOnMatch )
 	{
-		$this->params['updateOnNoMatch'] = $updateOnNoMatch;
+		$this->params['updateOnMatch'] = $updateOnMatch;
 	}
 }
 

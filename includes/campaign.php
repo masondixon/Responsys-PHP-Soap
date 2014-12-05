@@ -65,6 +65,37 @@ class mergeTriggerEmail extends interact
 	
 }
 
+class HAmergeTriggerEmail extends interact
+{
+
+	public $params = array( 'recordData'  => array( 'fieldNames' => null, 'records' => null ),
+			'mergeRule'   => null,
+			'campaign'    => null,
+			'triggerData' => null );
+
+	public function setMergeRuleParam( ListMergeRule $rule )
+	{
+		$this->params['mergeRule'] = $rule;
+	}
+
+	public function setRecordDataParam( array $fieldNames, array $records )
+	{
+		$this->params['recordData']['fieldNames'] = $fieldNames;
+		$this->params['recordData']['records'] = $records;
+	}
+
+	public function setCampaignParam( InteractObject $campaign_object )
+	{
+		$this->params['campaign'] = $campaign_object;
+	}
+
+	public function setTriggerDataParam( array $trigger_data )
+	{
+		$this->params['triggerData'] = $trigger_data;
+	}
+
+}
+
 
 class scheduleCampaignLaunch extends interact
 {
@@ -166,7 +197,7 @@ class triggerCampaignMessage extends interact
 		$this->params[ 'campaign'] = $campaign;
 	}
 	
-	public function setRecipientDataParam( InteractObject $listName, RecipientIdentifier $recipientIdentifier, array $recipient_ids, array $transientData  )
+	public function setRecipientDataParam( $folderName, $listName, RecipientIdentifier $recipientIdentifier, array $recipient_ids, array $transientData  )
 	{
 		$recipientDataArray = array();
 		$optionalDataArray  = array();
@@ -178,7 +209,7 @@ class triggerCampaignMessage extends interact
 		{
 			$optionalDataArray = null;
 			$recipient = new recipient();
-			$recipient->setListName( $listName );
+			$recipient->setListName( $folderName, $listName );
 				
 			$recipient->setEmailFormat( EmailFormat::NO_FORMAT );
 			$recipient->{ "set". $recipientIdentifier->getValue() }( $recipient_ids[ $cnt ] );
@@ -192,10 +223,11 @@ class triggerCampaignMessage extends interact
 				$optionalDataArray[] = $optionalData;
 			}
 			
-			$recipient->setOptionalData( $optionalDataArray );
-			$recipientDataArray[] = $recipient;
+			$recipientDataObj = new RecipientData();
+			$recipientDataObj->setRecipient( $recipient );
+			$recipientDataObj->setOptionalData( $optionalDataArray );
+			
+			$this->params['recipientData'][] = $recipientDataObj;
 		}
-		
-		$this->params['recipientData'] = $recipientDataArray;
 	}
 }
