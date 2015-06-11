@@ -22,7 +22,7 @@ try
 		$int_obj->setObjectName("masonList1");
 		
 		$retrieve_obj->setFieldListParam( array( "RIID_", "EMAIL_ADDRESS_", "FIRST_NAME" ) );
-		$retrieve_obj->setIdsToRetrieve( array( "mdixon7@gmail.com") );
+		$retrieve_obj->setIdsToRetrieve( array( "mdixon@gmail.com") );
 		$retrieve_obj->setListParam( $int_obj );
 		$retrieve_obj->setQueryColumn( QueryColumn::EMAIL2 );
 		
