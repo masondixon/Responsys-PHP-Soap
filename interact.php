@@ -4,6 +4,8 @@ class interact
 {		
 	
 	CONST SOAP_NS         = 'ws.rsys.com';
+	CONST SOAP_NS_URSA    = 'ws57.responsys';//
+	CONST SOAP_URI_URSA   = 'urn:ws57.responsys';
 	CONST SOAP_SESS       = 'SessionHeader';
 	CONST AUTH_SOAP_SESS  = 'AuthSessionHeader';
 	CONST SOAP_JID        = 'JSESSIONID';
@@ -14,7 +16,11 @@ class interact
 	CONST SOAP_ERROR_CALL_NAME = " Interact_API requires a soap call name in order to run API. " ;
 	
 	CONST RESPONSYS_PUBLIC_CERTIFICATE = "/Users/mdixon/Documents/certificatefun/ResponsysServerCertificate.cer";
-	CONST CLIENT_PRIVATE_KEY           = "/Users/mdixon/Documents/certificatefun/mdixon/md_private.key";
+	//CONST CLIENT_PRIVATE_KEY           = "/Users/mdixon/Desktop/allstate/ResponsysPrivateClient2.pem";
+	CONST CLIENT_PRIVATE_KEY           = "/Users/mdixon/Documents/certificatefun/mdixon/private.key";
+	//CONST RESPONSYS_PUBLIC_CERTIFICATE = "/Users/mdixon/Documents/certificatefun/ResponsysServerCertificate.cer";
+	//CONST CLIENT_PRIVATE_KEY           = "/Users/mdixon/Desktop/certificates/aic_md_key.key";
+	//CONST CLIENT_PRIVATE_KEY           = "/Users/mdixon/Desktop/allstate/resp_key.key";
 	
  	protected $endPoint,
  			  $wsdl,
@@ -52,18 +58,22 @@ class interact
 	{
 		$this->wsdl          = $wsdl;
 		$this->endPoint      = $end_point;
-		$this->uri           = null;
-		$this->soapNameSpace = self::SOAP_NS;
+		$this->uri           = ( stristr("ws3", $wsdl) || stristr("ws4", $wsdl) ) ? self::SOAP_URI_URSA : null;
+		$this->soapNameSpace = ( stristr("ws3", $wsdl) || stristr("ws4", $wsdl) ) ? self::SOAP_NS_URSA : self::SOAP_NS;
 	}
 	
-	private function setSoapHeaders()
+	private function setSoapHeaders( $authId = null )
 	{
 		$result = false;
 
 		$nameSpace = self::SOAP_NS;
 		
 		$headerArray   = array();
-		$sessionId     = array( 'sessionId' => new SoapVar( $this->sessionId, XSD_STRING, null, null, null, $this->soapNameSpace ));
+
+		$soap_header_name = isset( $authId ) ? 'authSessionId' : 'sessionId';
+		$this->sessionId  = isset( $authId ) ? $authId : $this->sessionId;
+			
+		$sessionId     = array( $soap_header_name => new SoapVar( $this->sessionId, XSD_STRING, null, null, null, $this->soapNameSpace ));
 		$sessionHeader = new SoapVar($sessionId, SOAP_ENC_OBJECT);
 		$headerArray[] = new SoapHeader( $this->soapNameSpace, self::SOAP_SESS, $sessionHeader);
 		
@@ -102,6 +112,7 @@ class interact
                                      'trace'      => TRUE,
 									 'connection_timeout' => 500000,
 				                     'keep_alive' => TRUE,
+				                     //'ssl_method' => SOAP_SSL_METHOD_SSLv3,
                                      //'proxy_host' => "127.0.0.1",
                                      //'proxy_port' => '8888',
 				     				 'cache_wsdl' => WSDL_CACHE_NONE, ) ;
@@ -169,8 +180,8 @@ class interact
 			echo $exception->getMessage();
 		}
 			
-		if( $this->debug == true )
-			print_r( $result );
+		//if( $this->debug == true )
+		//	print_r( $result );
 		
 		return $result;
 	}
@@ -236,6 +247,7 @@ class interact
 		return $result;
 	}
 	
+	
 	/**
 	 * Wrapper for logout
 	 * There is a max concurrent session allowance which if exceeded, will lock out the api user
@@ -293,22 +305,24 @@ class interact
 	 * This function is called first to receive a temporary session for the actual login call
 	 * Also verifies that user exists and is configured for login with certificate process on the Responsys side
 	 */
-	private function authenticateServer( $user, $challenge, $pod, $isHATM=false )
+	private function authServer( $user, $challenge, $wsdl, $endpoint)
 	{
 	
-		$this->setSoapParams( $pod, $isHATM );
+		$result = null;
+		
+		$this->setSoapParams( $wsdl, $endpoint );
 	
 		if( $this->setSoapClient() )
 		{
-			$authServerParams = new authenticateServerCall( $user, $challenge );
-			$this->doApiCall( $authServerParams::API_CALL_NAME, $authServerParams );
+			$instance = new authenticateServer($user, $challenge);
+			$result = $this->execute( $instance );
 		}
 		else
 		{
 			die( self::SOAP_ERROR_CLIENT );
 		}
 	
-		return isset( $this->result->result->authSessionId );
+		return $result;
 	
 	}
 	
@@ -319,7 +333,7 @@ class interact
 	 * @param unknown $pod
 	 * @param string $isHATM
 	 */
-	public function loginWithCertificate( $user, $byte_array_challenge, $pod, $isHATM=false )
+	public function loginWithCertificate( $user, $byte_array_challenge, $wsdl, $endpoint )
 	{
 	
 		// RESPONSYS PUBLIC CERT
@@ -341,17 +355,14 @@ class interact
 		}
 	
 		// Run authServer call to verify user and get a temporary sessionId for login call
-		if ( $this->authenticateServer( $user, $byte_array, $pod, $isHATM ) )
-		{
-			$authId             = $this->result->result->authSessionId;
-			$encServerChallenge = $this->result->result->encryptedClientChallenge;
-			$serverChallenge    = $this->result->result->serverChallenge;
-		}
-		else
-		{
-			die( "Failed authenticate server call - exiting" );
-		}
-	
+		$result = $this->authServer( $user, $byte_array, $wsdl, $endpoint );
+		
+		//print_r( $result );
+		
+		$authId             = $result->result->authSessionId;
+		$encServerChallenge = $result->result->encryptedClientChallenge;
+		$serverChallenge    = $result->result->serverChallenge;
+
 		// Hack to deal with null returns in challenge strings ( weak! )
 		// The trick is setting the null value to 128 - which should actually be out of range for java since it uses -128 through 127 but it works...
 		foreach ( $encServerChallenge as $key => $val )
@@ -371,7 +382,6 @@ class interact
 	
 		// Now we have to decrypt the binary string
 		$decryptMe = $this->packer( $container );
-	
 	
 		// USE RESP CERT TO DECYRPT THE VALUE AND DIFF ON ORIGINAL STRING VALUE !!!
 		// GET A X509 INSTANCE, THEN GET THE PUBLIC KEY FOR openssl_public_decrypt
@@ -440,14 +450,13 @@ class interact
 			// If all goes well we will get a sessionId in the result of the upcoming call.
 			$this->setSoapHeaders( $authId );
 			$this->setSessionCookie();
+			
+			$loginWithCertObj = new loginWithCertificate( $container3 );
 	
-			$encryptedServerChallenge = new stdClass();
-			$encryptedServerChallenge = $container3;
-	
-			$this->execute( 'loginWithCertificate', $encryptedServerChallenge );
+			$result = $this->execute( $loginWithCertObj );
 				
-			//print_r( $this->result );
-			return $this->result->result->sessionId;
+			print_r( $result );
+			return $result;
 	
 		}
 		else

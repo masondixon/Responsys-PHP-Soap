@@ -6,7 +6,7 @@ class ProofLaunchType
 	CONST TO_PROOFLIST = "LAUNCH_TO_PROOFLIST";
 	CONST TO_ADDRESS_USING_PROOFLIST = "LAUNCH_TO_ADDRESS_USING_PROOFLIST";
 	
-	public $proofLaunchType;
+	private $proofLaunchType;
 
 	public function setProofLaunchType( $type )
 	{
@@ -17,4 +17,5 @@ class ProofLaunchType
 	{
 		return $this->proofLaunchType;
 	}
+	
 }

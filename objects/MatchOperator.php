@@ -7,6 +7,7 @@ class MatchOperator
 {
 	public $matchOperator;
 	
-	CONST _AND_ = "AND";
+	CONST _AND_  = "AND";
 	CONST _NONE_ = "NONE";
+	CONST _OR_   = "OR";
 }

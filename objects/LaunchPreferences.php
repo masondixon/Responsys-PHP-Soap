@@ -27,4 +27,50 @@ class LaunchPreferences
 	
 	function __construct(){}
 	
+
+	public function setEnabledLimit( $flag=true )
+	{
+		$this->enabledLimit = $flag;
+	}
+	
+	public function setRecipientLimit( $recipients )
+	{
+		$this->recipientLimit = $recipients;
+	}
+	
+	public function setEnableNthSampling( $flag=true )
+	{
+		$this->enableNthSampling = $flag;
+	}
+	
+	public function setSamplingNthSelection( $selections )
+	{
+		$this->samplingNthSelection = $selections;
+	}
+	
+	public function setSamplingNthInterval( $intervals )
+	{
+		$this->samplingNthInterval = $intervals;
+	}
+	
+	public function setSamplingNthOffset( $offsets )
+	{
+		$this->samplingNthOffset = $offsets;
+	}
+	
+	public function setEnableProgressAlerts( $flag=true )
+	{
+		$this->enableProgressAlerts = $flag;
+	}
+	
+	public function setProgressEmailAddresses( $addresses )
+	{
+		$this->progressEmailAddresses = $addresses;
+	}
+	
+	public function setProgressChunk( ProgressChunk $chunk_size )
+	{
+		$this->progressChunk = $chunk_size->getProgressChunk();
+	}
+	
 }
