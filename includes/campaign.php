@@ -160,16 +160,13 @@ class triggerCustomEvent extends interact
 			$recipient->{ "set". $recipientIdentifier->getValue() }( $recipient_ids[ $cnt ] );
 			
 			// Build optionalData array
-			foreach( $transientData as $key => $array )
+			foreach( $transientData[ $cnt ] as $name => $value )
 			{
-				foreach ( $array as $name => $value )
-				{
-					$optionalData = null;
-					$optionalData = new optionalData();
-					$optionalData->setName($name);
-					$optionalData->setValue($value);
-					$optionalDataArray[] = $optionalData;
-				}
+				$optionalData = null;
+				$optionalData = new optionalData();
+				$optionalData->setName($name);
+				$optionalData->setValue($value);
+				$optionalDataArray[] = $optionalData;
 			}
 			
 			$recipientDataObj = new RecipientData();
@@ -178,8 +175,6 @@ class triggerCustomEvent extends interact
 			
 			$this->params['recipientData'][] = $recipientDataObj;
 		}
-			
-			print_r( $this->params );
 	}
 	 
 }
