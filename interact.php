@@ -454,8 +454,16 @@ class interact
 			$loginWithCertObj = new loginWithCertificate( $container3 );
 	
 			$result = $this->execute( $loginWithCertObj );
-				
-			print_r( $result );
+
+			if ($result) {
+				$this->sessionId = $result->result->sessionId;
+				if( !$this->setSoapHeaders() || !$this->setSessionCookie() )
+				{
+					throw new Exception( self::SOAP_ERROR_HEADER );
+				}
+			}
+
+			//print_r( $result );
 			return $result;
 	
 		}
