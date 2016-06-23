@@ -15,13 +15,6 @@ class interact
 	CONST SOAP_ERROR_HEADER    = " An error occurred during soap client creation - check soap header and cookie ";
 	CONST SOAP_ERROR_CALL_NAME = " Interact_API requires a soap call name in order to run API. " ;
 	
-	CONST RESPONSYS_PUBLIC_CERTIFICATE = "/Users/mdixon/Documents/certificatefun/ResponsysServerCertificate.cer";
-	//CONST CLIENT_PRIVATE_KEY           = "/Users/mdixon/Desktop/allstate/ResponsysPrivateClient2.pem";
-	CONST CLIENT_PRIVATE_KEY           = "/Users/mdixon/Documents/certificatefun/mdixon/private.key";
-	//CONST RESPONSYS_PUBLIC_CERTIFICATE = "/Users/mdixon/Documents/certificatefun/ResponsysServerCertificate.cer";
-	//CONST CLIENT_PRIVATE_KEY           = "/Users/mdixon/Desktop/certificates/aic_md_key.key";
-	//CONST CLIENT_PRIVATE_KEY           = "/Users/mdixon/Desktop/allstate/resp_key.key";
-	
  	protected $endPoint,
  			  $wsdl,
  			  $uri,
@@ -328,19 +321,21 @@ class interact
 	
 	/**
 	 * 
-	 * @param unknown $user
-	 * @param unknown $byte_array_challenge
-	 * @param unknown $pod
-	 * @param string $isHATM
+	 * @param string $user
+	 * @param string $byte_array_challenge
+	 * @param string $wsdl
+	 * @param string $endpoint
+	 * @param string $responsys_public_cert_path
+	 * @param string $client_private_key_path
 	 */
-	public function loginWithCertificate( $user, $byte_array_challenge, $wsdl, $endpoint )
+	public function loginWithCertificate( $user, $byte_array_challenge, $wsdl, $endpoint, $responsys_public_cert_path, $client_private_key_path)
 	{
 	
 		// RESPONSYS PUBLIC CERT
-		$responsys_certificate_file = file_get_contents( self::RESPONSYS_PUBLIC_CERTIFICATE );
+		$responsys_certificate_file = file_get_contents( $responsys_public_cert_path );
 	
 		// PRIVATE KEY REQUIRED FOR ENCRYPTING SERVER CHALLENGE - obtained from openssl cert & key creation process
-		$mdixon_certificate_file = file_get_contents( self::CLIENT_PRIVATE_KEY );
+		$mdixon_certificate_file = file_get_contents( $client_private_key_path );
 	
 		$byte_array = array();
 		$container  = array();
@@ -454,8 +449,16 @@ class interact
 			$loginWithCertObj = new loginWithCertificate( $container3 );
 	
 			$result = $this->execute( $loginWithCertObj );
-				
-			print_r( $result );
+
+			if ($result) {
+				$this->sessionId = $result->result->sessionId;
+				if( !$this->setSoapHeaders() || !$this->setSessionCookie() )
+				{
+					throw new Exception( self::SOAP_ERROR_HEADER );
+				}
+			}
+
+			//print_r( $result );
 			return $result;
 	
 		}
