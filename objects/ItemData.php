@@ -2,7 +2,11 @@
 
 class ItemData
 {
-	public $item,
-		   $itemName;
+	public $item;
+	
+	public function setItem( $itemData )
+	{
+		$this->item = $itemData;
+	}
 	
 }

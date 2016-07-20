@@ -33,7 +33,7 @@ class createContentLibraryItem extends interact
 		$this->params['type'] = $type;
 	}
 	
-	public function setItemDataParam( ItemData $data )
+	public function setItemDataParam( $data )
 	{
 		$this->params['itemData'] = $data;
 	}
