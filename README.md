@@ -1,4 +1,4 @@
-interact_sdk
+Responsys PHP Soap
 ============
 
 php soap client for responsys api
